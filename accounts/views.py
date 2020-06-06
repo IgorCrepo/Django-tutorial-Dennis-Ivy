@@ -12,7 +12,7 @@ from django.contrib.auth.models import Group
 
 # Create your views here.
 from .models import *
-from .forms import OrderForm, CreateUserForm, CustomerForm
+from .forms import *
 from .filters import OrderFilter
 from .decorators import unauthenticated_user, allowed_users, admin_only
 
@@ -66,8 +66,8 @@ def home(request):
     total_customers = customers.count()
 
     total_orders = orders.count()
-    delivered = orders.filter(status = 'Delivered').count()
-    pending = orders.filter(status = 'Pending').count()
+    delivered = orders.filter(status = 'Dostarczone').count()
+    pending = orders.filter(status = 'Oczekujące').count()
 
     context = {'orders': orders, 'customers': customers,
     'total_orders': total_orders, 'delivered': delivered,
@@ -91,8 +91,9 @@ def userPage(request):
 
 
 @login_required(login_url = "login")
-@allowed_users(allowed_roles = ['customer'])
+@allowed_users(allowed_roles = ['customer', 'admin'])
 def accountSettings(request):
+    
     customer = request.user.customer
     form = CustomerForm(instance = customer)
 
@@ -100,7 +101,8 @@ def accountSettings(request):
         form = CustomerForm(request.POST, request.FILES, instance = customer)
         if form.is_valid():
             form.save()
-
+            
+    form.visible_fields
     context = {'form': form}
     return render(request, 'accounts/account_settings.html', context)
 
@@ -129,19 +131,30 @@ def customer(request, pk_test):
 @login_required(login_url = "login")
 @allowed_users(allowed_roles = ['admin'])
 def createOrder(request, pk):
-    OrderFormSet = inlineformset_factory(Customer, Order, fields = ('product', 'status'), extra = 10)
-    customer = Customer.objects.get(id = pk)
-    formset = OrderFormSet(queryset = Order.objects.none(), instance = customer)
-    #form = OrderForm(initial = {'customer': customer})
-    if request.method == 'POST':
-        #print('Printing POST:', request.POST)
-        #form = OrderForm(request.POST)
-        formset = OrderFormSet(request.POST, instance = customer)
-        if formset.is_valid():
-            formset.save()
-            return redirect('/')
 
-    context = {'formset': formset}
+    # OrderFormSet = inlineformset_factory(Customer, Order, fields = ('product', 'status'), extra = 10)
+    # customer = Customer.objects.get(id = pk)
+    # formset = OrderFormSet(queryset = Order.objects.none(), instance = customer)
+    # #form = OrderForm(initial = {'customer': customer})
+    # if request.method == 'POST':
+    #     #print('Printing POST:', request.POST)
+    #     #form = OrderForm(request.POST)
+    #     formset = OrderFormSet(request.POST, instance = customer)
+    #     if formset.is_valid():
+    #         formset.save()
+    #         return redirect('/')
+
+    # context = {'formset': formset}
+
+
+    form = OrderForm()
+    if request.method == 'POST':
+        #print('Printing POST', request.POST)
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/')
+    context = {'form':form}
     return render(request, 'accounts/order_form.html', context)
 
 @login_required(login_url = "login")

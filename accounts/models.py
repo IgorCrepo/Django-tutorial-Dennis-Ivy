@@ -5,8 +5,8 @@ from django.contrib.auth.models import User
 
 class Customer(models.Model):
     user = models.OneToOneField(User, null = True, blank = True,on_delete = models.CASCADE)
-    name = models.CharField(max_length = 200, null = True)
-    phone = models.CharField(max_length = 200, null = True)
+    name = models.CharField("imię", max_length = 200, null = True)
+    phone = models.CharField("telefon", max_length = 200, null = True)
     email = models.CharField(max_length = 200, null = True)
     profile_pic = models.ImageField(default ="profile1.png", null = True, blank = True)
     date_created = models.DateTimeField(auto_now_add = True, null = True)
@@ -22,8 +22,8 @@ class Tag(models.Model):
 
 class Product(models.Model):
     CATEGORY = (
-            ('Indoor', 'Indoor'),
-            ('Out Door', 'Out Door'),
+            ('Systemy ochrony', 'Systemy ochrony'),
+            ('Biuro', 'Biuro'),
             )
 
     name = models.CharField(max_length = 200, null = True)
@@ -40,9 +40,9 @@ class Product(models.Model):
 
 class Order(models.Model):
     STATUS = (
-            ('Pending', 'Pending'),
-            ('Out for delivery', 'Out for delivery'),
-            ('Delivered', 'Delivered'),
+            ('Oczekujące', 'Oczekujące'),
+            ('Wysłane', 'Wysłane'),
+            ('Dostarczone', 'Dostarczone'),
             )
 
     customer = models.ForeignKey(Customer, null = True, on_delete = models.SET_NULL) #customer to rodzić ordera, SET_NULL - gdy skasujemy rodzica, to order nadal będzie w DB

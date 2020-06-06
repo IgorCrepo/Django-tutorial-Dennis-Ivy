@@ -15,9 +15,9 @@
 <div class="row">
 	<div class="col-md-3">
 		<div class="card card-body">
-			<a class="btn btn-warning" href="{% url 'home' %}"> &#8592; Back to Profile</a>
+			<a class="btn btn-warning" href="{% url 'home' %}"> &#8592; Powrót</a>
 			<hr>
-			<h3 style="text-align: center">Account Settings</h3>
+			<h3 style="text-align: center">Ustawienia konta</h3>
 			<hr>
 			<img class="profile-pic" src="{{request.user.customer.profile_pic.url}}">
 
@@ -29,7 +29,13 @@
 			<form method="POST" action="" enctype="multipart/form-data">
 				{% csrf_token %}
 				{{form.as_p}}
-
+				
+				<!-- <div class = "col-md-2">
+					<p>Imię i nazwisko: {{form.name}}</p>
+					<p>Telefon: {{form.phone}}</p>
+					<p>Email: {{form.email}}</p>
+				</div> -->
+				
 			<input class="btn btn-primary" type="submit" name="Update Information">
 			</form>
 		</div>
